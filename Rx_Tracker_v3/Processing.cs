@@ -44,9 +44,9 @@ namespace Rx_Tracker_v3
         #endregion
 
         #region List Processing
-        public static IEnumerable<Patient> ListPatient()
+        public static IEnumerable<Patient> ListAllPatients()
         {
-            return (db.Patients);
+            return (db.Patients.Where(a => a.PatientActive == true));
         }
 
         public static IEnumerable<Patient> ListIndividualPatient(int patientID)
@@ -59,17 +59,22 @@ namespace Rx_Tracker_v3
 
         }
 
-        public static IEnumerable<Prescription> ListPrescriptions(int selectedPatientID)
+        public static IEnumerable<Prescription> ListPrescriptionsByPatientID(int selectedPatientID)
         {
             return db.Prescriptions.Where(a => a.PrescriptionPatientID == selectedPatientID);
         }
 
-        public static void ListRefills()
+        public static IEnumerable<Refill> ListRefillsByPatientID(int selectedPatientID)
         {
-
+            return db.Refills.Where(a => a.RefillPatientID == selectedPatientID);
         }
 
-        public static void ListTransactions()
+        public static IEnumerable<Transaction> ListAllTransactions()
+        {
+            return db.Transactions;
+        }
+
+        public static void ListAllTransactionsByPatientID()
         {
 
         }
@@ -78,15 +83,27 @@ namespace Rx_Tracker_v3
         #region Modify Processing
         public static void ModifyPatient(Patient updatedPatientData)
         {
+            var patient = db.Patients.First<Patient>(a => a.PatientID == updatedPatientData.PatientID);
+            patient.PatientFullName = updatedPatientData.PatientFullName;
+            patient.PatientFirstName = updatedPatientData.PatientFirstName;
+            patient.PatientLastName = updatedPatientData.PatientLastName;
+            patient.PatientBirthDate = updatedPatientData.PatientBirthDate;
 
+            db.SaveChanges();
         }
 
-        public static void ModifyPrescription()
+        public static void ModifyPrescription(Prescription updatedPrescription)
         {
+            var rx = db.Prescriptions.First(a => a.PrescriptionPatientID == updatedPrescription.PrescriptionPatientID);
+            rx.PrescriptionName = updatedPrescription.PrescriptionName;
+            rx.PrescriptionPillDose = updatedPrescription.PrescriptionPillDose;
+            rx.PrescriptionRefillQuantity = updatedPrescription.PrescriptionRefillQuantity;
+            rx.PrescriptionRefillRemaining = updatedPrescription.PrescriptionRefillRemaining;
 
+            db.SaveChanges();
         }
 
-        public static void ModifyRefill()
+        public static void ModifyRefill(Refill updatedRefill)
         {
 
         }

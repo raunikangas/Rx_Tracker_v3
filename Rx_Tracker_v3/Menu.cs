@@ -60,6 +60,26 @@ namespace Rx_Tracker_v3
             }
         }
 
+        public static char ConsoleYesNoProcessing(string consoleOutput)
+        {
+            while(true)
+            {
+                Console.WriteLine($"{consoleOutput}");
+                try
+                {
+                    char input = Convert.ToChar(Console.ReadLine());
+                    if(input.ToString().ToLower() == "y" || input.ToString().ToLower() == "n")
+                    {
+                        return input;
+                    }
+                    Console.WriteLine("[!] Please enter Y or N");
+                }
+                catch(FormatException)
+                {
+                    Console.WriteLine("[!] Could Not Process Input Value - Please Try Again!");
+                }
+            }
+        }
         #endregion
 
 
@@ -99,7 +119,7 @@ namespace Rx_Tracker_v3
                         break;
                     case 2:
                         //TODO: Menu - List Patients
-                        var patientsList = Processing.ListPatient();
+                        var patientsList = Processing.ListAllPatients();
                         if(patientsList.Count() > 0)
                         {
                             ListPatientOutput(patientsList);
@@ -113,7 +133,7 @@ namespace Rx_Tracker_v3
                         //TODO: Menu - Select Patients
                         if(Processing.db.Patients.Count() > 0)
                         {
-                            ListPatientOutput(Processing.ListPatient());
+                            ListPatientOutput(Processing.ListAllPatients());
                         }
 
                         List<Patient> selectedPatient = Processing.SelectPatient(ConsoleIntProcessing("Select Patient ID: "));
@@ -159,7 +179,7 @@ namespace Rx_Tracker_v3
                         break;
                     case 2:
                         //TODO: Patient Menu - List Prescriptions
-                        ListPrescriptionOutput(Processing.ListPrescriptions(selectedPatient[0].PatientID));
+                        ListPrescriptionOutput(Processing.ListPrescriptionsByPatientID(selectedPatient[0].PatientID));
                         
                         break;
                     case 3:
@@ -168,7 +188,7 @@ namespace Rx_Tracker_v3
                         //{
                         //    Console.WriteLine($"Rx ID: {rx.PrescriptionID} | Rx Name: {rx.PrescriptionName} | Rx Quantity: {rx.PrescriptionPillQuanity} | Rx Expire Date: {rx.PrescriptionExpireDate.ToString("d")}");
                         //}
-                        ListPrescriptionOutput(Processing.ListPrescriptions(selectedPatient[0].PatientID));
+                        ListPrescriptionOutput(Processing.ListPrescriptionsByPatientID(selectedPatient[0].PatientID));
                         int selection = ConsoleIntProcessing("Select Prescription ID: ");
                         if(selection != 0)
                         {
@@ -178,21 +198,24 @@ namespace Rx_Tracker_v3
                         break;
                     case 4:
                         //TODO: Patient Menu - Modify Patient
+                        Console.WriteLine("\nModify Patient - Press enter to skip");
                         Patient updatedPatient = selectedPatient[0];
                         bool nameChange = false;
-                        Console.WriteLine($"Current First Name: {selectedPatient[0].PatientFirstName}");
-                        Console.Write("Updated First Name: ");
+                        Console.WriteLine($"\tCurrent First Name: {selectedPatient[0].PatientFirstName}");
+                        Console.Write("\tUpdated First Name: ");
                         string firstName = Console.ReadLine();
-                        if ((firstName != "") && (firstName != selectedPatient[0].PatientLastName))
+                        if ((firstName != "") && (firstName != selectedPatient[0].PatientFirstName))
                         {
-                            updatedPatient.PatientLastName = firstName;
+                            updatedPatient.PatientFirstName = firstName;
                             nameChange = true;
                         }
                         else
                         {
                             updatedPatient.PatientFirstName = selectedPatient[0].PatientFirstName;
                         }
-                        Console.Write("Update Last Name: ");
+
+                        Console.WriteLine($"\tCurrent Last Name: {selectedPatient[0].PatientLastName}");
+                        Console.Write("\tUpdate Last Name: ");
                         string lastName = Console.ReadLine();
                         if((lastName != "") && (lastName != selectedPatient[0].PatientLastName))
                         {
@@ -208,19 +231,19 @@ namespace Rx_Tracker_v3
                         {
                             updatedPatient.PatientFullName = $"{lastName}, {firstName}";
                         }
-                        Console.WriteLine($"Current Birth Date: {selectedPatient[0].PatientBirthDate.ToString("d")}");
-                        DateTime birthDate = ConsoleDateProcessing("Update Birthdate: ", "Birth");
-                        if (birthDate.ToString("d") != selectedPatient[0].PatientBirthDate.ToString("d"))
+
+                        Console.WriteLine($"\tCurrent Birth Date: {selectedPatient[0].PatientBirthDate.ToString("d")}");
+                        char response = ConsoleYesNoProcessing("Modify Birthdate (Y/N): ");
+                        if ( response == 'y' || response == 'Y')
                         {
+                            DateTime birthDate = ConsoleDateProcessing("\tUpdate Birthdate: ", "Birth");
                             updatedPatient.PatientBirthDate = birthDate;
                         }
                         else
                         {
                             updatedPatient.PatientBirthDate = selectedPatient[0].PatientBirthDate;
                         }
-
-                        Console.WriteLine($"");
-
+                        
                         Processing.ModifyPatient(updatedPatient);
                         break;
                     case 5:

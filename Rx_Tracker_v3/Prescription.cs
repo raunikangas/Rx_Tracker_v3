@@ -31,6 +31,7 @@ namespace Rx_Tracker_v3
             PrescriptionActive = true;
             PrescriptionPillQuanity = pillQuantity;
             PrescriptionRefillQuantity = refillQuantity;
+            PrescriptionRefillRemaining = refillQuantity;
             PrescriptionPatientID = patientID;
             PrescriptionName = rxName;
         }
