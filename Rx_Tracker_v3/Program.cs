@@ -6,7 +6,12 @@ namespace Rx_Tracker_v3
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Starting Patient Prescription Tracking Application v3");
+            Menu.MainMenu();
+            Console.WriteLine("Terminating Execution of Program");
+
+            Console.WriteLine("\n\nPress Enter to Exit");
+            Console.ReadLine();
         }
     }
 }
