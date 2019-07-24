@@ -7,6 +7,8 @@ namespace Rx_Tracker_v3
 {
     public static class Menu
     {
+
+        #region Console Processing
         public static int ConsoleIntProcessing(string consoleOutput)
         {
             while(true)
@@ -23,13 +25,43 @@ namespace Rx_Tracker_v3
             }
         }
         
-        public static void ListPatient(IEnumerable<Patient> patientsList)
+        public static void ListPatientOutput(IEnumerable<Patient> patientsList)
         {
             foreach (var patient in patientsList)
             {
-                Console.WriteLine($"Patient ID: {patient.PatientID} | Patient Name: {patient.PatientFullName} | Patient Birthdate: {patient.PatientBirthDate}");
+                Console.WriteLine($"Patient ID: {patient.PatientID} | Patient Name: {patient.PatientFullName} | Patient Birthdate: {patient.PatientBirthDate.ToString("d")}");
             }
         }
+
+        public static void ListPrescriptionOutput(IEnumerable<Prescription> prescriptionList)
+        {
+            foreach(var rx in prescriptionList)
+            {
+                Console.WriteLine($"Rx ID: {rx.PrescriptionID} | Rx Name: {rx.PrescriptionName} | Rx Quantity: {rx.PrescriptionPillQuanity} | Rx Expire Date: {rx.PrescriptionExpireDate.ToString("d")}");
+            }
+        }
+
+        public static DateTime ConsoleDateProcessing(string consoleOutput, string outputType)
+        {
+            while(true)
+            {
+                try
+                {
+                    Console.WriteLine($"{consoleOutput}");
+                    int month = ConsoleIntProcessing($"\t\t{outputType} Month (Ex. 01): ");
+                    int day = ConsoleIntProcessing($"\t\t{outputType} Day (Ex. 01): ");
+                    int year = ConsoleIntProcessing($"\t\t{outputType} Year (Ex. 1980): ");
+                    return Convert.ToDateTime($"{month}/{day}/{year}");
+                }
+                catch(FormatException)
+                {
+                    Console.WriteLine("[!] Error Processing Date Entry - Please Try Again!");
+                }
+            }
+        }
+
+        #endregion
+
 
         public static void MainMenu()
         {
@@ -55,12 +87,7 @@ namespace Rx_Tracker_v3
                             string firstName = Console.ReadLine();
                             Console.Write("\tPatient Last Name: ");
                             string lastName = Console.ReadLine();
-                            Console.WriteLine("\tPatient Birth Date: ");
-                            int month = ConsoleIntProcessing("\t\tBirth Month (Ex. 01): ");
-                            int day = ConsoleIntProcessing("\t\tBirth Day (Ex. 01): ");
-                            int year = ConsoleIntProcessing("\t\tBirth Year (Ex. 1980): ");
-                        
-                            DateTime birthDate = Convert.ToDateTime($"{month}/{day}/{year}");
+                            DateTime birthDate = ConsoleDateProcessing("\tPatient Birth Date: ", "Birth");
 
                             Processing.AddPatient(firstName, lastName, birthDate);
                             Console.WriteLine("Patient Added to Database");
@@ -75,7 +102,7 @@ namespace Rx_Tracker_v3
                         var patientsList = Processing.ListPatient();
                         if(patientsList.Count() > 0)
                         {
-                            ListPatient(patientsList);
+                            ListPatientOutput(patientsList);
                         }
                         else
                         {
@@ -84,7 +111,10 @@ namespace Rx_Tracker_v3
                         break;
                     case 3:
                         //TODO: Menu - Select Patients
-
+                        if(Processing.db.Patients.Count() > 0)
+                        {
+                            ListPatientOutput(Processing.ListPatient());
+                        }
 
                         List<Patient> selectedPatient = Processing.SelectPatient(ConsoleIntProcessing("Select Patient ID: "));
 
@@ -129,18 +159,16 @@ namespace Rx_Tracker_v3
                         break;
                     case 2:
                         //TODO: Patient Menu - List Prescriptions
-                        var returnedPrescriptions = Processing.ListPrescriptions(selectedPatient[0].PatientID);
-                        foreach(var rx in returnedPrescriptions)
-                        {
-                            Console.WriteLine($"Rx ID: {rx.PrescriptionID} | Rx Name: {rx.PrescriptionName} | Rx Quantity: {rx.PrescriptionPillQuanity} | Rx Expire Date: {rx.PrescriptionExpireDate.ToString("d")}");
-                        }
+                        ListPrescriptionOutput(Processing.ListPrescriptions(selectedPatient[0].PatientID));
+                        
                         break;
                     case 3:
                         //TODO: Patient Menu - Select Prescriptions
-                        foreach(var rx in Processing.db.Prescriptions)
-                        {
-                            Console.WriteLine($"Rx ID: {rx.PrescriptionID} | Rx Name: {rx.PrescriptionName} | Rx Quantity: {rx.PrescriptionPillQuanity} | Rx Expire Date: {rx.PrescriptionExpireDate.ToString("d")}");
-                        }
+                        //foreach(var rx in Processing.db.Prescriptions)
+                        //{
+                        //    Console.WriteLine($"Rx ID: {rx.PrescriptionID} | Rx Name: {rx.PrescriptionName} | Rx Quantity: {rx.PrescriptionPillQuanity} | Rx Expire Date: {rx.PrescriptionExpireDate.ToString("d")}");
+                        //}
+                        ListPrescriptionOutput(Processing.ListPrescriptions(selectedPatient[0].PatientID));
                         int selection = ConsoleIntProcessing("Select Prescription ID: ");
                         if(selection != 0)
                         {
@@ -150,6 +178,50 @@ namespace Rx_Tracker_v3
                         break;
                     case 4:
                         //TODO: Patient Menu - Modify Patient
+                        Patient updatedPatient = selectedPatient[0];
+                        bool nameChange = false;
+                        Console.WriteLine($"Current First Name: {selectedPatient[0].PatientFirstName}");
+                        Console.Write("Updated First Name: ");
+                        string firstName = Console.ReadLine();
+                        if ((firstName != "") && (firstName != selectedPatient[0].PatientLastName))
+                        {
+                            updatedPatient.PatientLastName = firstName;
+                            nameChange = true;
+                        }
+                        else
+                        {
+                            updatedPatient.PatientFirstName = selectedPatient[0].PatientFirstName;
+                        }
+                        Console.Write("Update Last Name: ");
+                        string lastName = Console.ReadLine();
+                        if((lastName != "") && (lastName != selectedPatient[0].PatientLastName))
+                        {
+                            updatedPatient.PatientLastName = lastName;
+                            nameChange = true;
+                        }
+                        else
+                        {
+                            updatedPatient.PatientLastName = selectedPatient[0].PatientLastName;
+                        }
+
+                        if(nameChange)
+                        {
+                            updatedPatient.PatientFullName = $"{lastName}, {firstName}";
+                        }
+                        Console.WriteLine($"Current Birth Date: {selectedPatient[0].PatientBirthDate.ToString("d")}");
+                        DateTime birthDate = ConsoleDateProcessing("Update Birthdate: ", "Birth");
+                        if (birthDate.ToString("d") != selectedPatient[0].PatientBirthDate.ToString("d"))
+                        {
+                            updatedPatient.PatientBirthDate = birthDate;
+                        }
+                        else
+                        {
+                            updatedPatient.PatientBirthDate = selectedPatient[0].PatientBirthDate;
+                        }
+
+                        Console.WriteLine($"");
+
+                        Processing.ModifyPatient(updatedPatient);
                         break;
                     case 5:
                         //TODO: Patient Menu - Take Prescription Dose
@@ -177,7 +249,10 @@ namespace Rx_Tracker_v3
 
                 switch(ConsoleIntProcessing("Select Prescription Menu Option: "))
                 {
-
+                    case 0:
+                        break;
+                    case 1:
+                        break;
                 }
 
             }

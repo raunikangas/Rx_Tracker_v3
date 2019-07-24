@@ -15,6 +15,7 @@ namespace Rx_Tracker_v3
             return db.Patients.Where(a => a.PatientID == patientID).ToList();
         }
 
+        
 
         #endregion
 
@@ -75,7 +76,7 @@ namespace Rx_Tracker_v3
         #endregion
 
         #region Modify Processing
-        public static void ModifyPatient()
+        public static void ModifyPatient(Patient updatedPatientData)
         {
 
         }
