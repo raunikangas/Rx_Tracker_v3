@@ -60,6 +60,26 @@ namespace Rx_Tracker_v3
             }
         }
 
+        public static char ConsoleYesNoProcessing(string consoleOutput)
+        {
+            while(true)
+            {
+                Console.WriteLine($"{consoleOutput}");
+                try
+                {
+                    char input = Convert.ToChar(Console.ReadLine());
+                    if(input.ToString().ToLower() == "y" || input.ToString().ToLower() == "n")
+                    {
+                        return input;
+                    }
+                    Console.WriteLine("[!] Please enter Y or N");
+                }
+                catch(FormatException)
+                {
+                    Console.WriteLine("[!] Could Not Process Input Value - Please Try Again!");
+                }
+            }
+        }
         #endregion
 
 
@@ -178,21 +198,24 @@ namespace Rx_Tracker_v3
                         break;
                     case 4:
                         //TODO: Patient Menu - Modify Patient
+                        Console.WriteLine("\nModify Patient - Press enter to skip");
                         Patient updatedPatient = selectedPatient[0];
                         bool nameChange = false;
-                        Console.WriteLine($"Current First Name: {selectedPatient[0].PatientFirstName}");
-                        Console.Write("Updated First Name: ");
+                        Console.WriteLine($"\tCurrent First Name: {selectedPatient[0].PatientFirstName}");
+                        Console.Write("\tUpdated First Name: ");
                         string firstName = Console.ReadLine();
-                        if ((firstName != "") && (firstName != selectedPatient[0].PatientLastName))
+                        if ((firstName != "") && (firstName != selectedPatient[0].PatientFirstName))
                         {
-                            updatedPatient.PatientLastName = firstName;
+                            updatedPatient.PatientFirstName = firstName;
                             nameChange = true;
                         }
                         else
                         {
                             updatedPatient.PatientFirstName = selectedPatient[0].PatientFirstName;
                         }
-                        Console.Write("Update Last Name: ");
+
+                        Console.WriteLine($"\tCurrent Last Name: {selectedPatient[0].PatientLastName}");
+                        Console.Write("\tUpdate Last Name: ");
                         string lastName = Console.ReadLine();
                         if((lastName != "") && (lastName != selectedPatient[0].PatientLastName))
                         {
@@ -208,19 +231,19 @@ namespace Rx_Tracker_v3
                         {
                             updatedPatient.PatientFullName = $"{lastName}, {firstName}";
                         }
-                        Console.WriteLine($"Current Birth Date: {selectedPatient[0].PatientBirthDate.ToString("d")}");
-                        DateTime birthDate = ConsoleDateProcessing("Update Birthdate: ", "Birth");
-                        if (birthDate.ToString("d") != selectedPatient[0].PatientBirthDate.ToString("d"))
+
+                        Console.WriteLine($"\tCurrent Birth Date: {selectedPatient[0].PatientBirthDate.ToString("d")}");
+                        char response = ConsoleYesNoProcessing("Modify Birthdate (Y/N): ");
+                        if ( response == 'y' || response == 'Y')
                         {
+                            DateTime birthDate = ConsoleDateProcessing("\tUpdate Birthdate: ", "Birth");
                             updatedPatient.PatientBirthDate = birthDate;
                         }
                         else
                         {
                             updatedPatient.PatientBirthDate = selectedPatient[0].PatientBirthDate;
                         }
-
-                        Console.WriteLine($"");
-
+                        
                         Processing.ModifyPatient(updatedPatient);
                         break;
                     case 5:

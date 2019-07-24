@@ -78,7 +78,13 @@ namespace Rx_Tracker_v3
         #region Modify Processing
         public static void ModifyPatient(Patient updatedPatientData)
         {
+            var patient = db.Patients.First<Patient>(a => a.PatientID == updatedPatientData.PatientID);
+            patient.PatientFullName = updatedPatientData.PatientFullName;
+            patient.PatientFirstName = updatedPatientData.PatientFirstName;
+            patient.PatientLastName = updatedPatientData.PatientLastName;
+            patient.PatientBirthDate = updatedPatientData.PatientBirthDate;
 
+            db.SaveChanges();
         }
 
         public static void ModifyPrescription()
