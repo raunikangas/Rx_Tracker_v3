@@ -10,12 +10,15 @@ namespace Rx_Tracker_v3
         public static RxContext db = new RxContext();
 
         #region Select Actions
-        public static List<Patient> SelectPatient(int patientID)
+        public static Patient SelectPatient(int patientID)
         {
-            return db.Patients.Where(a => a.PatientID == patientID).ToList();
+            return db.Patients.First(a => a.PatientID == patientID);
         }
 
-        
+        public static Refill AdminSelectRefill(int refillID)
+        {
+            return db.Refills.First(a => a.RefillID == refillID);
+        }
 
         #endregion
 
@@ -27,10 +30,10 @@ namespace Rx_Tracker_v3
             db.SaveChanges();
         }
 
-        public static void AddPrescription(int patientID, string rxName, int refillQuantity, int pillQuantity)
+        public static void AddPrescription(int patientID, string rxName, int refillQuantity, int pillQuantity, DateTime expireDate)
         {
-            db.Prescriptions.Add(new Prescription(patientID, rxName, refillQuantity, pillQuantity));
-            db.Transactions.Add(new Transaction(ClassAction.Add, ClassesEnum.Prescription, ID_Type.Prescription, patientID, $"Added Prescription {rxName} | Patient ID: {patientID} | Quantity: {pillQuantity} | Refills: {refillQuantity}"));
+            db.Prescriptions.Add(new Prescription(patientID, rxName, refillQuantity, pillQuantity, expireDate));
+            db.Transactions.Add(new Transaction(ClassAction.Add, ClassesEnum.Prescription, ID_Type.Prescription, patientID, $"Added Prescription {rxName} | Patient ID: {patientID} | Quantity: {pillQuantity} | Refills: {refillQuantity} | Expire: {expireDate.ToString("d")}"));
             db.SaveChanges();
         }
 
@@ -54,9 +57,9 @@ namespace Rx_Tracker_v3
             return (db.Patients.Where(a => a.PatientID == patientID));
         }
 
-        public static void ListPrescriptions()
+        public static IEnumerable<Prescription> ListPrescriptions()
         {
-
+            return db.Prescriptions;
         }
 
         public static IEnumerable<Prescription> ListPrescriptionsByPatientID(int selectedPatientID)
@@ -64,9 +67,29 @@ namespace Rx_Tracker_v3
             return db.Prescriptions.Where(a => a.PrescriptionPatientID == selectedPatientID);
         }
 
+        /// <summary>
+        /// Returns Enumerable list of prescriptions for patient that are active and have refills remaining
+        /// </summary>
+        /// <param name="selectedPatientID">ID of Patient</param>
+        /// <returns></returns>
+        public static IEnumerable<Prescription> ListPrescriptionRefillActiveByPatientID(int selectedPatientID)
+        {
+            return db.Prescriptions.Where(a => a.PrescriptionPatientID == selectedPatientID).Where(a => a.PrescriptionActive == true).Where(a => a.PrescriptionRefillRemaining > 0);
+        }
+
+        public static IEnumerable<Refill> ListRefillsAll()
+        {
+            return db.Refills;
+        }
+
         public static IEnumerable<Refill> ListRefillsByPatientID(int selectedPatientID)
         {
             return db.Refills.Where(a => a.RefillPatientID == selectedPatientID);
+        }
+
+        public static IEnumerable<Refill> AdminListRefillNeedFilled()
+        {
+            return db.Refills.Where(a => a.RefillFilled == false);
         }
 
         public static IEnumerable<Transaction> ListAllTransactions()
@@ -74,9 +97,9 @@ namespace Rx_Tracker_v3
             return db.Transactions;
         }
 
-        public static void ListAllTransactionsByPatientID()
+        public static IEnumerable<Transaction> ListAllTransactionsByPatientID(int selectedPatientID)
         {
-
+            return db.Transactions.Where(a => a.TransactionPatientID == selectedPatientID);
         }
         #endregion
 
@@ -105,7 +128,20 @@ namespace Rx_Tracker_v3
 
         public static void ModifyRefill(Refill updatedRefill)
         {
+            var refill = db.Refills.First(a => a.RefillID == updatedRefill.RefillID);
 
+            refill.RefillPatientID = updatedRefill.RefillPatientID;
+            refill.RefillRxID = updatedRefill.RefillRxID;
+
+            db.SaveChanges();
+        }
+
+        public static void ModifyRefillFilled(Refill updatedRefill)
+        {
+            var refill = db.Refills.First(a => a.RefillID == updatedRefill.RefillID);
+
+            refill.RefillEntryDate = DateTime.Now;
+            refill.RefillFilled = true;
         }
         #endregion
 
@@ -125,6 +161,20 @@ namespace Rx_Tracker_v3
 
         }
 
+        public static void AdminDeletePatient()
+        {
+
+        }
+
+        public static void AdminDeletePrescription()
+        {
+
+        }
+
+        public static void AdminDeleteRefill()
+        {
+
+        }
         #endregion
 
 

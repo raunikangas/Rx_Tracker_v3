@@ -43,7 +43,7 @@ namespace Rx_Tracker_v3
 
                 rx.Property(a => a.PrescriptionName).IsRequired();
                 rx.Property(a => a.PrescriptionPatientID).IsRequired();
-                rx.Property(a => a.PrescriptionPillQuanity).IsRequired();
+                rx.Property(a => a.PrescriptionPillQuantity).IsRequired();
                 rx.Property(a => a.PrescriptionRefillQuantity).IsRequired();
 
                 rx.HasOne(a => a.Patient)

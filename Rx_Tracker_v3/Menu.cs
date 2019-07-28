@@ -27,17 +27,35 @@ namespace Rx_Tracker_v3
         
         public static void ListPatientOutput(IEnumerable<Patient> patientsList)
         {
+            //foreach (var patient in patientsList)
+            //{
+            //    Console.WriteLine($"Patient ID: {patient.PatientID} | Patient Name: {patient.PatientFullName} | Patient Birthdate: {patient.PatientBirthDate.ToString("d")}");
+            //}
+            
+
+            Console.WriteLine($"ID | Patient Name | Birth Date | Active Rx Count");
             foreach (var patient in patientsList)
             {
-                Console.WriteLine($"Patient ID: {patient.PatientID} | Patient Name: {patient.PatientFullName} | Patient Birthdate: {patient.PatientBirthDate.ToString("d")}");
+                var rxCount = Processing.db.Prescriptions.Where(a => a.PrescriptionPatientID == patient.PatientID).Where(a => a.PrescriptionActive == true).Count();
+                Console.WriteLine($"{patient.PatientID} | {patient.PatientFullName} | {patient.PatientBirthDate.ToString("d")} | {rxCount}");
             }
         }
 
         public static void ListPrescriptionOutput(IEnumerable<Prescription> prescriptionList)
         {
+            Console.WriteLine($"ID | Name | Quantity | Rem Refill | Expire Date");
             foreach(var rx in prescriptionList)
             {
-                Console.WriteLine($"Rx ID: {rx.PrescriptionID} | Rx Name: {rx.PrescriptionName} | Rx Quantity: {rx.PrescriptionPillQuanity} | Rx Expire Date: {rx.PrescriptionExpireDate.ToString("d")}");
+                Console.WriteLine($"{rx.PrescriptionID} | {rx.PrescriptionName} | {rx.PrescriptionPillQuantity} | {rx.PrescriptionRefillRemaining} | {rx.PrescriptionExpireDate.ToString("d")}");
+            }
+        }
+
+        public static void ListRefillOutput(IEnumerable<Refill> refillList)
+        {
+            Console.WriteLine($"ID | RX Name | Filled | Submitted Date | Filled Date");
+            foreach(var refill in refillList)
+            {
+                Console.WriteLine($"{refill.RefillID} | {Processing.db.Prescriptions.Where(a => a.PrescriptionID == refill.RefillRxID).Select(a => a.PrescriptionName)} | {refill.RefillFilled} | {refill.RefillEntryDate.ToString("d")} | {refill.RefillFillDate.ToString("d")}");
             }
         }
 
@@ -87,12 +105,13 @@ namespace Rx_Tracker_v3
         {
             while(true)
             {
+                Console.WriteLine("~ Main Menu Options ~");
                 Console.WriteLine("\t0 - Exit Application");
                 Console.WriteLine("\t1 - Add Patient");
                 Console.WriteLine("\t2 - List Patient");
                 Console.WriteLine("\t3 - Select Patients");
                 Console.WriteLine("\t4 - ");
-                Console.WriteLine("\t10 - List All Transactions");
+                Console.WriteLine("\t10 ~ Patient Admin Menu ~");
 
                 switch (ConsoleIntProcessing("Enter Menu Option: "))
                 {
@@ -118,25 +137,19 @@ namespace Rx_Tracker_v3
                         }
                         break;
                     case 2:
-                        //TODO: Menu - List Patients
-                        var patientsList = Processing.ListAllPatients();
-                        if(patientsList.Count() > 0)
-                        {
-                            ListPatientOutput(patientsList);
-                        }
-                        else
-                        {
-                            Console.WriteLine("[!] No Patients to List");
-                        }
+                        //DONE: Menu - List Patients
+                        Console.WriteLine();
+                        ListPatientOutput(Processing.ListAllPatients());
                         break;
                     case 3:
                         //TODO: Menu - Select Patients
                         if(Processing.db.Patients.Count() > 0)
                         {
+                            Console.WriteLine();
                             ListPatientOutput(Processing.ListAllPatients());
                         }
 
-                        List<Patient> selectedPatient = Processing.SelectPatient(ConsoleIntProcessing("Select Patient ID: "));
+                        Patient selectedPatient = Processing.SelectPatient(ConsoleIntProcessing("Select Patient ID: "));
 
                         PatientMenu(selectedPatient);
                         break;
@@ -144,17 +157,138 @@ namespace Rx_Tracker_v3
                         //TODO: Menu - 
                         break;
                     case 10:
-                        //TODO: Menu - Create List All Transaction
+                        //TODO: Menu - Admin Menu
+                        AdminMenu();
                         break;
                 }
+
+                Console.WriteLine();
             }
             
         }
 
-        public static void PatientMenu(List<Patient> selectedPatient)
+        public static void AdminMenu()
+        {
+            while(true)
+            {
+                Console.WriteLine("~ Admin Menu Options ~");
+                Console.WriteLine("\t\tAdmin listing also displays disabled entries");
+                Console.WriteLine("\t0 - Exit Admin Menu");
+                Console.WriteLine("\t1 - List All Transactions");
+                Console.WriteLine("\t2 - List All Patients");
+                Console.WriteLine("\t3 - List ALl Prescriptions");
+                Console.WriteLine("\t4 - List All Refills");
+                Console.WriteLine("\t5 - Fill Patient Refill");
+                Console.WriteLine("\t6 - Disable Patient");
+                Console.WriteLine("\t7 - Delete Patient");
+                Console.WriteLine("\t8 - Disable Prescription");
+                Console.WriteLine("\t9 - Delete Prescription");
+                Console.WriteLine("\t10 - Delete Refill");
+
+                switch(ConsoleIntProcessing("Enter Menu Option: "))
+                {
+                    case 0:
+                        return;
+                    case 1:
+                        //TODO: Admin Menu - Create List All Transaction
+                        var transaction = Processing.ListAllTransactions();
+                        if(transaction.Count() > 0)
+                        {
+                            Console.WriteLine($"ID | Patient ID | Logged Action | Log Date Time");
+                            foreach (var trans in transaction)
+                            {
+                                Console.WriteLine($"{trans.TransactionID} | {trans.TransactionPatientID} | {trans.TransactionAction} | {trans.TransactionEntryDateTime}");
+                            }
+                        }
+                        break;
+                    case 2:
+                        //DONE: Admin Menu - Create List All Patients
+                        var patientsList = Processing.ListAllPatients();
+                        if (patientsList.Count() > 0)
+                        {
+                            ListPatientOutput(patientsList);
+                        }
+                        else
+                        {
+                            Console.WriteLine("[!] No Patients to List");
+                        }
+
+                        break;
+                    case 3:
+                        //DONE: Admin Menu - Create List All Precriptions
+                        var rxList = Processing.ListPrescriptions();
+                        if (rxList.Count() > 0)
+                        {
+                            Console.WriteLine("\nListing All Entered Prescriptions");
+                            ListPrescriptionOutput(rxList);
+                        }
+                        else
+                        {
+                            Console.WriteLine("[!] No Prescriptions to List");
+                        }
+                        break;
+                    case 4:
+                        //DONE: Admin Menu - Create List All Refills
+                        var refillList = Processing.ListRefillsAll();
+                        if(refillList.Count() > 0)
+                        {
+                            Console.WriteLine("\nListing All Entered Refills");
+                        }
+                        else
+                        {
+                            Console.WriteLine("[!] No Refills to List");
+                        }
+                        
+                        break;
+                    case 5:
+                        //HIGH: Admin Menu - Create Fill Patient Refill
+                        //List refills with filled = false
+                        //Select refill based on ID
+                        //Set filled to true
+                        //Decrement prescription refillRemaining countm
+
+                        var adminRefillList = Processing.AdminListRefillNeedFilled();
+                        if(adminRefillList.Count() > 0)
+                        {
+                            Console.WriteLine("ID | Patient ID | RX ID | Refill Entry Date");
+                            foreach(var item in adminRefillList)
+                            {
+                                Console.WriteLine($"{item.RefillID} | {item.RefillPatientID} | {item.RefillRxID} | {item.RefillEntryDate.ToString("d")}");
+                            }
+
+                            int selection = ConsoleIntProcessing("Enter Refill ID: ");
+
+                        }
+                        else
+                        {
+                            Console.WriteLine("[!] No Refills to Fill");
+                        }
+
+                        break;
+                    case 6:
+                        //TODO: Admin Menu - Create Disable Patient
+                        break;
+                    case 7:
+                        //TODO: Admin Menu - Create Delete Patient
+                        break;
+                    case 8:
+                        //TODO: Admin Menu - Create Disable Precription
+                        break;
+                    case 9:
+                        //TODO: Admin Menu - Create Delete Prescription
+                        break;
+                    case 10:
+                        //TODO: Admin Menu - Create Delete Refill
+                        break;
+                }
+            }
+        }
+
+        public static void PatientMenu(Patient selectedPatient)
         {
             while (true)
             {
+                Console.WriteLine($"Patient Menu Options for {selectedPatient.PatientFullName}");
                 Console.WriteLine("\t0 - Exit Patient Menu");
                 Console.WriteLine("\t1 - Add Prescriptions");
                 Console.WriteLine("\t2 - List Prescription");
@@ -174,12 +308,12 @@ namespace Rx_Tracker_v3
                         string rxName = Console.ReadLine();
                         int refillQuantity = ConsoleIntProcessing("Prescription Refill Count: ");
                         int pillQuantity = ConsoleIntProcessing("Prescription Quantity: ");
-
-                        Processing.AddPrescription(selectedPatient[0].PatientID, rxName, refillQuantity, pillQuantity);
+                        DateTime expireDate = ConsoleDateProcessing("Prescription Expire Date: ", "Expire");
+                        Processing.AddPrescription(selectedPatient.PatientID, rxName, refillQuantity, pillQuantity, expireDate);
                         break;
                     case 2:
                         //TODO: Patient Menu - List Prescriptions
-                        ListPrescriptionOutput(Processing.ListPrescriptionsByPatientID(selectedPatient[0].PatientID));
+                        ListPrescriptionOutput(Processing.ListPrescriptionsByPatientID(selectedPatient.PatientID));
                         
                         break;
                     case 3:
@@ -188,43 +322,43 @@ namespace Rx_Tracker_v3
                         //{
                         //    Console.WriteLine($"Rx ID: {rx.PrescriptionID} | Rx Name: {rx.PrescriptionName} | Rx Quantity: {rx.PrescriptionPillQuanity} | Rx Expire Date: {rx.PrescriptionExpireDate.ToString("d")}");
                         //}
-                        ListPrescriptionOutput(Processing.ListPrescriptionsByPatientID(selectedPatient[0].PatientID));
+                        ListPrescriptionOutput(Processing.ListPrescriptionsByPatientID(selectedPatient.PatientID));
                         int selection = ConsoleIntProcessing("Select Prescription ID: ");
                         if(selection != 0)
                         {
-                            PatientPrescriptionMenu(Processing.db.Prescriptions.Where(a => a.PrescriptionID == selection));
+                            PatientPrescriptionMenu(Processing.db.Prescriptions.First<Prescription>(a => a.PrescriptionID == selection));
                         }
                         
                         break;
                     case 4:
                         //TODO: Patient Menu - Modify Patient
                         Console.WriteLine("\nModify Patient - Press enter to skip");
-                        Patient updatedPatient = selectedPatient[0];
+                        Patient updatedPatient = selectedPatient;
                         bool nameChange = false;
-                        Console.WriteLine($"\tCurrent First Name: {selectedPatient[0].PatientFirstName}");
+                        Console.WriteLine($"\tCurrent First Name: {selectedPatient.PatientFirstName}");
                         Console.Write("\tUpdated First Name: ");
                         string firstName = Console.ReadLine();
-                        if ((firstName != "") && (firstName != selectedPatient[0].PatientFirstName))
+                        if ((firstName != "") && (firstName != selectedPatient.PatientFirstName))
                         {
                             updatedPatient.PatientFirstName = firstName;
                             nameChange = true;
                         }
                         else
                         {
-                            updatedPatient.PatientFirstName = selectedPatient[0].PatientFirstName;
+                            updatedPatient.PatientFirstName = selectedPatient.PatientFirstName;
                         }
 
-                        Console.WriteLine($"\tCurrent Last Name: {selectedPatient[0].PatientLastName}");
+                        Console.WriteLine($"\tCurrent Last Name: {selectedPatient.PatientLastName}");
                         Console.Write("\tUpdate Last Name: ");
                         string lastName = Console.ReadLine();
-                        if((lastName != "") && (lastName != selectedPatient[0].PatientLastName))
+                        if((lastName != "") && (lastName != selectedPatient.PatientLastName))
                         {
                             updatedPatient.PatientLastName = lastName;
                             nameChange = true;
                         }
                         else
                         {
-                            updatedPatient.PatientLastName = selectedPatient[0].PatientLastName;
+                            updatedPatient.PatientLastName = selectedPatient.PatientLastName;
                         }
 
                         if(nameChange)
@@ -232,7 +366,7 @@ namespace Rx_Tracker_v3
                             updatedPatient.PatientFullName = $"{lastName}, {firstName}";
                         }
 
-                        Console.WriteLine($"\tCurrent Birth Date: {selectedPatient[0].PatientBirthDate.ToString("d")}");
+                        Console.WriteLine($"\tCurrent Birth Date: {selectedPatient.PatientBirthDate.ToString("d")}");
                         char response = ConsoleYesNoProcessing("Modify Birthdate (Y/N): ");
                         if ( response == 'y' || response == 'Y')
                         {
@@ -241,7 +375,7 @@ namespace Rx_Tracker_v3
                         }
                         else
                         {
-                            updatedPatient.PatientBirthDate = selectedPatient[0].PatientBirthDate;
+                            updatedPatient.PatientBirthDate = selectedPatient.PatientBirthDate;
                         }
                         
                         Processing.ModifyPatient(updatedPatient);
@@ -260,26 +394,34 @@ namespace Rx_Tracker_v3
             }
         }
 
-        public static void PatientPrescriptionMenu(IEnumerable<Prescription> prescription)
+        public static void PatientPrescriptionMenu(Prescription prescription)
         {
             while(true)
             {
                 Console.WriteLine("\t0 - Exit Prescription Menu");
                 Console.WriteLine("\t1 - Add Refill");
                 Console.WriteLine("\t2 - List Refills");
-                Console.WriteLine("\t3 - Modify Prescription");
+                Console.WriteLine("\t3 - Modify Refill");
                 Console.WriteLine("\t");
 
                 switch(ConsoleIntProcessing("Select Prescription Menu Option: "))
                 {
                     case 0:
-                        break;
+                        return;
                     case 1:
+                        Processing.AddRefill(prescription.PrescriptionID, prescription.PrescriptionPatientID);
+                        break;
+                    case 2:
+                        Processing.ListRefillsByPatientID(prescription.PrescriptionPatientID);
+                        break;
+                    case 3:
                         break;
                 }
 
             }
         }
+
+        
 
     }
 }

@@ -10,6 +10,9 @@ namespace Rx_Tracker_v3
         public int RefillRxID { get; set; }
         public int RefillPatientID { get; set; }
         public DateTime RefillEntryDate { get; set; }
+        public bool RefillFilled { get; set; }
+        public DateTime RefillFillDate { get; set; }
+
 
         public virtual Patient Patient { get; set; }
         public virtual Prescription Prescription { get; set; }
@@ -24,6 +27,7 @@ namespace Rx_Tracker_v3
             RefillRxID = rxID;
             RefillPatientID = patientID;
             RefillEntryDate = DateTime.Now;
+            RefillFilled = false;
         }
     }
 }

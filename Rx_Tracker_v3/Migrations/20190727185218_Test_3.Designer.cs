@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rx_Tracker_v3;
 
 namespace Rx_Tracker_v3.Migrations
 {
     [DbContext(typeof(RxContext))]
-    partial class RxContextModelSnapshot : ModelSnapshot
+    [Migration("20190727185218_Test_3")]
+    partial class Test_3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,9 +72,7 @@ namespace Rx_Tracker_v3.Migrations
 
                     b.Property<int>("PrescriptionPillDose");
 
-                    b.Property<int>("PrescriptionPillQuantity");
-
-                    b.Property<int>("PrescriptionPillQuantityRemaining");
+                    b.Property<int>("PrescriptionPillQuanity");
 
                     b.Property<int>("PrescriptionRefillQuantity");
 
