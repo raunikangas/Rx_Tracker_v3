@@ -26,7 +26,7 @@ namespace Rx_Tracker_v3
 
         }
 
-        public Prescription(int patientID, string rxName, int refillQuantity, int pillQuantity, DateTime expireDate)
+        public Prescription(int patientID, int patientTrackingID, string rxName, int refillQuantity, int pillQuantity, DateTime expireDate)
         {
             PrescriptionEntryDate = DateTime.Now;
             PrescriptionActive = true;
@@ -37,6 +37,7 @@ namespace Rx_Tracker_v3
             PrescriptionPatientID = patientID;
             PrescriptionName = rxName;
             PrescriptionExpireDate = expireDate;
+            PrescriptionPatientTrackingNumber = PrescriptionPatientID;
         }
     }
 }

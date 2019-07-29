@@ -32,7 +32,17 @@ namespace Rx_Tracker_v3
 
         public static void AddPrescription(int patientID, string rxName, int refillQuantity, int pillQuantity, DateTime expireDate)
         {
-            db.Prescriptions.Add(new Prescription(patientID, rxName, refillQuantity, pillQuantity, expireDate));
+            var patientIDMax = db.Prescriptions.Where(a => a.PrescriptionPatientID == patientID).Select(a => a.PrescriptionPatientTrackingNumber).Max();
+            if(patientIDMax == 0)
+            {
+                patientIDMax++;
+            }
+            else
+            {
+                patientIDMax++;
+            }
+
+            db.Prescriptions.Add(new Prescription(patientID, patientIDMax, rxName, refillQuantity, pillQuantity, expireDate));
             db.Transactions.Add(new Transaction(ClassAction.Add, ClassesEnum.Prescription, ID_Type.Prescription, patientID, $"Added Prescription {rxName} | Patient ID: {patientID} | Quantity: {pillQuantity} | Refills: {refillQuantity} | Expire: {expireDate.ToString("d")}"));
             db.SaveChanges();
         }
@@ -40,7 +50,9 @@ namespace Rx_Tracker_v3
         public static void AddRefill(int rxID, int patientID)
         {
             db.Add(new Refill(rxID, patientID));
-            db.Add(new Transaction(ClassAction.Add, ClassesEnum.Refill, ID_Type.Patient, patientID, $"Added Refill | RX ID: {rxID} | Patient ID: {patientID} | Remaining Refills: {null} ~Need to Implement~"));
+            var rx = db.Prescriptions.First(a => a.PrescriptionID == rxID);
+            rx.PrescriptionRefillRemaining -= 1;
+            db.Add(new Transaction(ClassAction.Add, ClassesEnum.Refill, ID_Type.Patient, patientID, $"Added Refill | RX ID: {rxID} | Patient ID: {patientID} | Remaining Refills: {db.Prescriptions.First(a => a.PrescriptionID == rxID).PrescriptionRefillRemaining}"));
             db.SaveChanges();
         }
         
@@ -145,20 +157,29 @@ namespace Rx_Tracker_v3
         }
         #endregion
 
-        #region Delete / Disable Processing
-        public static void DisablePatient()
+        #region Activate / Delete / Disable Processing
+        public static void AdminActivatePatient(Patient patient)
         {
-
+            var patientObject = db.Patients.First(a => a.PatientID == patient.PatientID);
+            patientObject.PatientActive = true;
+            db.Transactions.Add(new Transaction(ClassAction.Activate, ClassesEnum.Patient, ID_Type.Patient, patient.PatientID, $"Activated Patient ID: {patient.PatientID} | Full Name: {patient.PatientFullName}"));
+            db.SaveChanges();
         }
 
-        public static void DisablePrescription()
+        public static void DisablePatient(Patient patient)
         {
-
+            var patientObject = db.Patients.First(a => a.PatientID == patient.PatientID);
+            patientObject.PatientActive = false;
+            db.Transactions.Add(new Transaction(ClassAction.Disable, ClassesEnum.Patient, ID_Type.Patient, patient.PatientID, $"Disabled Patient ID: {patient.PatientID} | Full Name {patient.PatientFullName}"));
+            db.SaveChanges();
         }
 
-        public static void DisableRefill()
+        public static void DisablePrescription(Prescription rx)
         {
-
+            var prescriptionObject = db.Prescriptions.First(a => a.PrescriptionID == rx.PrescriptionID);
+            prescriptionObject.PrescriptionActive = false;
+            db.Transactions.Add(new Transaction(ClassAction.Disable, ClassesEnum.Prescription, ID_Type.Prescription, rx.PrescriptionID, $"Disabled Prescription ID: {rx.PrescriptionID} | Prescription Name: {rx.PrescriptionName}"));
+            db.SaveChanges();
         }
 
         public static void AdminDeletePatient()

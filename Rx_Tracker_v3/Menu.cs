@@ -55,7 +55,7 @@ namespace Rx_Tracker_v3
             Console.WriteLine($"ID | RX Name | Filled | Submitted Date | Filled Date");
             foreach(var refill in refillList)
             {
-                Console.WriteLine($"{refill.RefillID} | {Processing.db.Prescriptions.Where(a => a.PrescriptionID == refill.RefillRxID).Select(a => a.PrescriptionName)} | {refill.RefillFilled} | {refill.RefillEntryDate.ToString("d")} | {refill.RefillFillDate.ToString("d")}");
+                Console.WriteLine($"{refill.RefillID} | {Processing.db.Prescriptions.First(a => a.PrescriptionID == refill.RefillRxID).PrescriptionName} | {refill.RefillFilled} | {refill.RefillEntryDate.ToString("d")} | {refill.RefillFillDate.ToString("d")}");
             }
         }
 
@@ -412,7 +412,9 @@ namespace Rx_Tracker_v3
                         Processing.AddRefill(prescription.PrescriptionID, prescription.PrescriptionPatientID);
                         break;
                     case 2:
-                        Processing.ListRefillsByPatientID(prescription.PrescriptionPatientID);
+                        Console.WriteLine("Listing Patient Refills");
+                        ListRefillOutput(Processing.ListRefillsByPatientID(prescription.PrescriptionPatientID));
+                        Console.WriteLine();
                         break;
                     case 3:
                         break;

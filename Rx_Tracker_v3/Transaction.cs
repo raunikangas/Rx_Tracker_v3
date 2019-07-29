@@ -5,7 +5,7 @@ using System.Text;
 namespace Rx_Tracker_v3
 {
     public enum ClassesEnum { Patient, Prescription, Refill }
-    public enum ClassAction { Add, Modify, Delete, Disable }
+    public enum ClassAction { Add, Modify, Delete, Disable, Activate }
     public enum ID_Type { Patient, Prescription, Refill}
 
     public class Transaction
@@ -26,7 +26,7 @@ namespace Rx_Tracker_v3
         /// <summary>
         /// Transaction Logging - Patient Transaction Logging
         /// </summary>
-        /// <param name="classAction">Action Taken (Add, Modify, Disable, Delete)</param>
+        /// <param name="classAction">Action Taken (Activate, Add, Modify, Disable, Delete)</param>
         /// <param name="classes">Action Class (Patient, Prescription, Refill)</param>
         /// <param name="idType">Type of ID that is being tracked</param>
         /// <param name="idNumber">ID Number of ID Type</param>
