@@ -66,7 +66,7 @@ namespace Rx_Tracker_v3
             {
                 try
                 {
-                    Console.WriteLine($"{consoleOutput}");
+                    Console.Write($"\t{consoleOutput}");
                     int month = ConsoleIntProcessing($"\t\t{outputType} Month (Ex. 01): ");
                     int day = ConsoleIntProcessing($"\t\t{outputType} Day (Ex. 01): ");
                     int year = ConsoleIntProcessing($"\t\t{outputType} Year (Ex. 1980): ");

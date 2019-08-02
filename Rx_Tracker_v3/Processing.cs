@@ -217,8 +217,10 @@ namespace Rx_Tracker_v3
 
         public static void TakeDose(int prescriptionID, int doseAmmount)
         {
+            //HIGH: Make transaction logging for taking dose
             Prescription rx = db.Prescriptions.First(a => a.PrescriptionID == prescriptionID);
             rx.PrescriptionPillQuantityRemaining -= doseAmmount;
+            db.Transactions.Add(new Transaction(ClassAction.TakeDose, ClassesEnum.Prescription, ID_Type.Patient, db.Prescriptions.First(a => a.PrescriptionID == prescriptionID).PrescriptionPatientID, $"Take Dose | Patient {null} Took {doseAmmount} Pills of {db.Prescriptions.First(a => a.PrescriptionID == prescriptionID).PrescriptionName}"));
             db.SaveChanges();
         }
 
@@ -226,6 +228,7 @@ namespace Rx_Tracker_v3
         {
             return db.Patients.First(a => a.PatientID == patientID);
         }
+
 
         #endregion
 
