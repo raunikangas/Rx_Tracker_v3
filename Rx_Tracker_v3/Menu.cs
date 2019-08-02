@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Rx_Tracker_v3
 {
@@ -98,6 +99,38 @@ namespace Rx_Tracker_v3
                 }
             }
         }
+
+        public static string ConsoleEmailProcessing(string consoleOutput)
+        {
+            string regx = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,8})+)$";
+            while (true)
+            {
+                Console.WriteLine($"{consoleOutput}");
+                try
+                {
+                    string email = Console.ReadLine();
+                    var match = Regex.Match(email, regx, RegexOptions.IgnoreCase);
+                    
+                    if(match.Success)
+                    {
+                        return email;
+                    }
+                    else if(email.Length > 500)
+                    {
+                        Console.WriteLine($"[!] The input was too long to process");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[!] The input \"{email}\" was not reconized as a valid email address");
+                    }
+                }
+                catch(Exception)
+                {
+                    Console.WriteLine("[!] Error processing email, please try again");
+                }
+                
+            }
+        }
         #endregion
 
 
@@ -120,15 +153,16 @@ namespace Rx_Tracker_v3
                     case 1:
                         try
                         {
-                            //TODO: Menu - Add Patient with brithdate
+                            //Done: Menu - Add Patient with brithdate
                             Console.WriteLine("~ Add Patient ~");
                             Console.Write("\tPatient First Name: ");
                             string firstName = Console.ReadLine();
                             Console.Write("\tPatient Last Name: ");
                             string lastName = Console.ReadLine();
+                            string email = ConsoleEmailProcessing("Enter Email: ");
                             DateTime birthDate = ConsoleDateProcessing("\tPatient Birth Date: ", "Birth");
 
-                            Processing.AddPatient(firstName, lastName, birthDate);
+                            Processing.AddPatient(firstName, lastName, email, birthDate);
                             Console.WriteLine("Patient Added to Database");
                         }
                         catch(FormatException)
@@ -142,7 +176,7 @@ namespace Rx_Tracker_v3
                         ListPatientOutput(Processing.ListAllPatients());
                         break;
                     case 3:
-                        //TODO: Menu - Select Patients
+                        //DONE: Menu - Select Patients
                         if(Processing.db.Patients.Count() > 0)
                         {
                             Console.WriteLine();
@@ -154,7 +188,7 @@ namespace Rx_Tracker_v3
                         PatientMenu(selectedPatient);
                         break;
                     case 4:
-                        //TODO: Menu - 
+                        //LOW: Menu - 
                         break;
                     case 10:
                         //TODO: Menu - Admin Menu
@@ -288,13 +322,14 @@ namespace Rx_Tracker_v3
         {
             while (true)
             {
+                int refillCount = Processing.ListPrescriptionRefillActiveByPatientID(selectedPatient.PatientID).Count();
                 Console.WriteLine($"Patient Menu Options for {selectedPatient.PatientFullName}");
                 Console.WriteLine("\t0 - Exit Patient Menu");
                 Console.WriteLine("\t1 - Add Prescriptions");
-                Console.WriteLine("\t2 - List Prescription");
+                Console.WriteLine("\t2 - List Active Prescription");
                 Console.WriteLine("\t3 - Select Prescription");
                 Console.WriteLine("\t4 - Modify Patient Information");
-                Console.WriteLine("\t5 - Take Prescription Dose");
+                Console.WriteLine($"\t5 - List Available Refills - {refillCount} Prescription(s)");
                 Console.WriteLine("\t8 - Disable Patient");
                 Console.WriteLine("\t9 - List Patient Transactions");
 
@@ -308,8 +343,9 @@ namespace Rx_Tracker_v3
                         string rxName = Console.ReadLine();
                         int refillQuantity = ConsoleIntProcessing("Prescription Refill Count: ");
                         int pillQuantity = ConsoleIntProcessing("Prescription Quantity: ");
+                        int indivDose = ConsoleIntProcessing("Prescription Dose (Ex. \"2\" for 2Pills): ");
                         DateTime expireDate = ConsoleDateProcessing("Prescription Expire Date: ", "Expire");
-                        Processing.AddPrescription(selectedPatient.PatientID, rxName, refillQuantity, pillQuantity, expireDate);
+                        Processing.AddPrescription(selectedPatient.PatientID, rxName, refillQuantity, pillQuantity, indivDose, expireDate);
                         break;
                     case 2:
                         //TODO: Patient Menu - List Prescriptions
@@ -326,7 +362,7 @@ namespace Rx_Tracker_v3
                         int selection = ConsoleIntProcessing("Select Prescription ID: ");
                         if(selection != 0)
                         {
-                            PatientPrescriptionMenu(Processing.db.Prescriptions.First<Prescription>(a => a.PrescriptionID == selection));
+                            PatientPrescriptionMenu(Processing.SelectPrescription(selection));
                         }
                         
                         break;
@@ -380,9 +416,6 @@ namespace Rx_Tracker_v3
                         
                         Processing.ModifyPatient(updatedPatient);
                         break;
-                    case 5:
-                        //TODO: Patient Menu - Take Prescription Dose
-                        break;
                     case 8:
                         //TODO: Patient Menu - Disable Patient
                         break;
@@ -398,13 +431,14 @@ namespace Rx_Tracker_v3
         {
             while(true)
             {
+                Console.WriteLine($"Menu Options for Prescription {prescription.PrescriptionName}");
                 Console.WriteLine("\t0 - Exit Prescription Menu");
                 Console.WriteLine("\t1 - Add Refill");
                 Console.WriteLine("\t2 - List Refills");
                 Console.WriteLine("\t3 - Modify Refill");
-                Console.WriteLine("\t");
+                Console.WriteLine("\t4 - Take Prescription Dose");
 
-                switch(ConsoleIntProcessing("Select Prescription Menu Option: "))
+                switch(ConsoleIntProcessing($"Enter Menu Option: "))
                 {
                     case 0:
                         return;
@@ -412,11 +446,45 @@ namespace Rx_Tracker_v3
                         Processing.AddRefill(prescription.PrescriptionID, prescription.PrescriptionPatientID);
                         break;
                     case 2:
-                        Console.WriteLine("Listing Patient Refills");
-                        ListRefillOutput(Processing.ListRefillsByPatientID(prescription.PrescriptionPatientID));
-                        Console.WriteLine();
+                        Console.WriteLine("\tListing Patient Refills");
+                        var refillList = Processing.ListRefillsByPatientID(prescription.PrescriptionPatientID);
+                        if(refillList.Count() > 0)
+                        {
+                            ListRefillOutput(refillList);
+                        }
+                        else
+                        {
+                            Console.WriteLine("\t[~] No Prescriptions Eligible For Refill");
+                        }
+
                         break;
                     case 3:
+                        break;
+                    case 4:
+                        //TODO: Patient Menu - Take Prescription Dose
+                        int doseAmmount = Processing.db.Prescriptions.First(a => a.PrescriptionID == prescription.PrescriptionID).PrescriptionPillDose;
+                        int currentQuantity = Processing.db.Prescriptions.First(a => a.PrescriptionID == prescription.PrescriptionID).PrescriptionPillQuantityRemaining;
+
+                        if(currentQuantity > doseAmmount)
+                        {
+                            int remainingQuantity = currentQuantity - doseAmmount;
+
+                            Console.WriteLine($"\t\tPatient {Processing.ReturnIndividualPatient(prescription.PrescriptionPatientID).PatientFullName} taking {prescription.PrescriptionPillDose} pills of {prescription.PrescriptionName}");
+                            Processing.TakeDose(prescription.PrescriptionID, doseAmmount);
+                            Console.WriteLine($"\t\tRemaining Prescription Quantity: {prescription.PrescriptionPillQuantityRemaining}");
+                        }
+                        else
+                        {
+                            if((Processing.db.Prescriptions.First(a => a.PrescriptionID == prescription.PrescriptionID).PrescriptionRefillRemaining <= 0) || (currentQuantity > 0 && currentQuantity < doseAmmount))
+                            {
+                                Console.WriteLine($"[~] Patient Needs To Apply For A Refill To Take Dose");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"[!] Patient Has No More Refills - Not Enough Prescription Quantity For Full Dose - Contact Doctor");
+                            }
+                            
+                        }
                         break;
                 }
 

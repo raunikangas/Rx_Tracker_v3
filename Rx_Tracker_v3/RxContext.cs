@@ -32,6 +32,7 @@ namespace Rx_Tracker_v3
                 p.Property(a => a.PatientFullName).IsRequired();
                 p.Property(a => a.PatientBirthDate).IsRequired();
                 p.Property(a => a.PatientEnteredDate).IsRequired();
+                p.Property(a => a.PatientEmail).IsRequired();
             });
 
             modelBuilder.Entity<Prescription>().ToTable("Prescriptions");
@@ -45,6 +46,7 @@ namespace Rx_Tracker_v3
                 rx.Property(a => a.PrescriptionPatientID).IsRequired();
                 rx.Property(a => a.PrescriptionPillQuantity).IsRequired();
                 rx.Property(a => a.PrescriptionRefillQuantity).IsRequired();
+                rx.Property(a => a.PrescriptionNextRefillEnableDate).IsRequired();
 
                 rx.HasOne(a => a.Patient)
                 .WithMany()

@@ -17,6 +17,7 @@ namespace Rx_Tracker_v3
         public int PrescriptionPillDose { get; set; }
         public DateTime PrescriptionExpireDate { get; set; }
         public DateTime PrescriptionEntryDate { get; set; }
+        public DateTime PrescriptionNextRefillEnableDate { get; set; }
         public bool PrescriptionActive { get; set; }
 
         public virtual Patient Patient { get; set; }
@@ -26,7 +27,7 @@ namespace Rx_Tracker_v3
 
         }
 
-        public Prescription(int patientID, int patientTrackingID, string rxName, int refillQuantity, int pillQuantity, DateTime expireDate)
+        public Prescription(int patientID, int patientTrackingID, string rxName, int refillQuantity, int pillQuantity, int individualDose, DateTime expireDate)
         {
             PrescriptionEntryDate = DateTime.Now;
             PrescriptionActive = true;
@@ -37,7 +38,18 @@ namespace Rx_Tracker_v3
             PrescriptionPatientID = patientID;
             PrescriptionName = rxName;
             PrescriptionExpireDate = expireDate;
-            PrescriptionPatientTrackingNumber = PrescriptionPatientID;
+            PrescriptionPatientTrackingNumber = patientTrackingID;
+            PrescriptionPillDose = individualDose;
+
+            if(refillQuantity == 0)
+            {
+                PrescriptionNextRefillEnableDate = expireDate;
+            }
+            else
+            {
+                PrescriptionNextRefillEnableDate = DateTime.Now.AddDays(Convert.ToInt32((pillQuantity/individualDose) + ((pillQuantity/individualDose)*0.5)));
+            }
+            
         }
     }
 }

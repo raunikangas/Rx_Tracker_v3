@@ -21,12 +21,13 @@ namespace Rx_Tracker_v3
 
         }
 
-        public Patient(string fName, string lName, DateTime birthDate)
+        public Patient(string fName, string lName, string email, DateTime birthDate)
         {
             PatientFirstName = fName;
             PatientLastName = lName;
             PatientFullName = $"{lName}, {fName}";
             PatientBirthDate = birthDate;
+            PatientEmail = email;
             PatientActive = true;
             PatientEnteredDate = DateTime.Now;
         }

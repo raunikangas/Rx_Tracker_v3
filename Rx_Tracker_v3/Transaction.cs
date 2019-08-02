@@ -5,7 +5,7 @@ using System.Text;
 namespace Rx_Tracker_v3
 {
     public enum ClassesEnum { Patient, Prescription, Refill }
-    public enum ClassAction { Add, Modify, Delete, Disable, Activate }
+    public enum ClassAction { Add, Modify, Delete, Disable, Activate, TakeDose }
     public enum ID_Type { Patient, Prescription, Refill}
 
     public class Transaction

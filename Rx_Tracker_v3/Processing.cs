@@ -15,6 +15,11 @@ namespace Rx_Tracker_v3
             return db.Patients.First(a => a.PatientID == patientID);
         }
 
+        public static Prescription SelectPrescription(int rxID)
+        {
+            return db.Prescriptions.First(a => a.PrescriptionID == rxID);
+        }
+
         public static Refill AdminSelectRefill(int refillID)
         {
             return db.Refills.First(a => a.RefillID == refillID);
@@ -23,26 +28,28 @@ namespace Rx_Tracker_v3
         #endregion
 
         #region Add Processing
-        public static void AddPatient(string fName, string lName, DateTime birthDate)
+        public static void AddPatient(string fName, string lName, string email, DateTime birthDate)
         {
-            db.Add(new Patient(fName, lName, birthDate));
-            db.Add(new Transaction(ClassAction.Add, ClassesEnum.Patient, $"Added Patient {lName}, {fName} | Birthdate: {birthDate.ToString("d")}"));
+            db.Add(new Patient(fName, lName, email, birthDate));
+            db.Add(new Transaction(ClassAction.Add, ClassesEnum.Patient, $"Added Patient {lName}, {fName} | Email: {email} | Birthdate: {birthDate.ToString("d")}"));
             db.SaveChanges();
         }
 
-        public static void AddPrescription(int patientID, string rxName, int refillQuantity, int pillQuantity, DateTime expireDate)
+        public static void AddPrescription(int patientID, string rxName, int refillQuantity, int pillQuantity, int individualDose, DateTime expireDate)
         {
-            var patientIDMax = db.Prescriptions.Where(a => a.PrescriptionPatientID == patientID).Select(a => a.PrescriptionPatientTrackingNumber).Max();
-            if(patientIDMax == 0)
+            int rxCount = db.Prescriptions.Where(a => a.PrescriptionPatientID == patientID).Count();
+            int patientIDMax;
+            if (rxCount == 0)
             {
-                patientIDMax++;
+                patientIDMax = 1;
             }
             else
             {
+                patientIDMax = db.Prescriptions.Where(a => a.PrescriptionPatientID == patientID).Select(a => a.PrescriptionPatientTrackingNumber).Max();
                 patientIDMax++;
             }
 
-            db.Prescriptions.Add(new Prescription(patientID, patientIDMax, rxName, refillQuantity, pillQuantity, expireDate));
+            db.Prescriptions.Add(new Prescription(patientID, patientIDMax, rxName, refillQuantity, pillQuantity, individualDose, expireDate));
             db.Transactions.Add(new Transaction(ClassAction.Add, ClassesEnum.Prescription, ID_Type.Prescription, patientID, $"Added Prescription {rxName} | Patient ID: {patientID} | Quantity: {pillQuantity} | Refills: {refillQuantity} | Expire: {expireDate.ToString("d")}"));
             db.SaveChanges();
         }
@@ -86,7 +93,15 @@ namespace Rx_Tracker_v3
         /// <returns></returns>
         public static IEnumerable<Prescription> ListPrescriptionRefillActiveByPatientID(int selectedPatientID)
         {
-            return db.Prescriptions.Where(a => a.PrescriptionPatientID == selectedPatientID).Where(a => a.PrescriptionActive == true).Where(a => a.PrescriptionRefillRemaining > 0);
+            //HIGH: Incorporate Prescription search to include ability to only show prescriptions after they can apply for refill
+            //HIGH: Map prescription method to a menu option
+
+            //DateTime earliest = new DateTime(2013, 12, 23);
+            //DateTime latest = new DateTime(2014, 1, 14);
+            //var inYear = docs.Where(d => DateTime.Parse(d.Date) >= earliest).Where(d => DateTime.Parse(d.Date) < latest);
+
+            return db.Prescriptions.Where(a => a.PrescriptionNextRefillEnableDate > DateTime.Now).Where(a => a.PrescriptionActive == true);
+            //return db.Prescriptions.Where(a => a.PrescriptionPatientID == selectedPatientID).Where(a => a.PrescriptionActive == true).Where(a => a.PrescriptionRefillRemaining > 0);
         }
 
         public static IEnumerable<Refill> ListRefillsAll()
@@ -198,7 +213,21 @@ namespace Rx_Tracker_v3
         }
         #endregion
 
+        #region Other Processing Methods
 
+        public static void TakeDose(int prescriptionID, int doseAmmount)
+        {
+            Prescription rx = db.Prescriptions.First(a => a.PrescriptionID == prescriptionID);
+            rx.PrescriptionPillQuantityRemaining -= doseAmmount;
+            db.SaveChanges();
+        }
+
+        public static Patient ReturnIndividualPatient(int patientID)
+        {
+            return db.Patients.First(a => a.PatientID == patientID);
+        }
+
+        #endregion
 
     }
 }
