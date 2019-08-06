@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Rx_Tracker_v3.Transaction>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionAction)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionClass)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionClassAction)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionEntryDateTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionPatientID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionIDType)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionAction)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionClass)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionClassAction)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionEntryDateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionPatientID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionIDType)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.TransactionID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.TransactionID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.TransactionID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,69 @@
+﻿@model Rx_Tracker_v3.Patient
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Patient</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PatientFirstName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PatientFirstName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PatientLastName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PatientLastName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PatientFullName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PatientFullName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PatientBirthDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PatientBirthDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PatientEnteredDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PatientEnteredDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PatientEmail)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PatientEmail)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PatientPhoneNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PatientPhoneNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PatientActive)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PatientActive)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="PatientID" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

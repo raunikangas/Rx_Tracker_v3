@@ -1,0 +1,54 @@
+﻿@model Rx_Tracker_v3.Transaction
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Transaction</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TransactionAction)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransactionAction)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransactionClass)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransactionClass)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransactionClassAction)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransactionClassAction)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransactionEntryDateTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransactionEntryDateTime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransactionPatientID)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransactionPatientID)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransactionIDType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransactionIDType)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.TransactionID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
