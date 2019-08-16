@@ -1,0 +1,93 @@
+﻿@model Rx_Tracker_v3.Prescription
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Prescription</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionPatientTrackingNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionPatientTrackingNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionRefillQuantity)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionRefillQuantity)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionRefillRemaining)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionRefillRemaining)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionPillQuantity)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionPillQuantity)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionPillQuantityRemaining)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionPillQuantityRemaining)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionPillDose)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionPillDose)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionExpireDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionExpireDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionEntryDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionEntryDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionNextRefillEnableDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionNextRefillEnableDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionActive)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionActive)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Patient)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Patient.PatientEmail)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="PrescriptionID" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

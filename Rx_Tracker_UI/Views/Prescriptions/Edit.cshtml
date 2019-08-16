@@ -1,0 +1,91 @@
+﻿@model Rx_Tracker_v3.Prescription
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>Prescription</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PrescriptionID" />
+            <div class="form-group">
+                <label asp-for="PrescriptionPatientID" class="control-label"></label>
+                <select asp-for="PrescriptionPatientID" class="form-control" asp-items="ViewBag.PrescriptionPatientID"></select>
+                <span asp-validation-for="PrescriptionPatientID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrescriptionName" class="control-label"></label>
+                <input asp-for="PrescriptionName" class="form-control" />
+                <span asp-validation-for="PrescriptionName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrescriptionPatientTrackingNumber" class="control-label"></label>
+                <input asp-for="PrescriptionPatientTrackingNumber" class="form-control" />
+                <span asp-validation-for="PrescriptionPatientTrackingNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrescriptionRefillQuantity" class="control-label"></label>
+                <input asp-for="PrescriptionRefillQuantity" class="form-control" />
+                <span asp-validation-for="PrescriptionRefillQuantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrescriptionRefillRemaining" class="control-label"></label>
+                <input asp-for="PrescriptionRefillRemaining" class="form-control" />
+                <span asp-validation-for="PrescriptionRefillRemaining" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrescriptionPillQuantity" class="control-label"></label>
+                <input asp-for="PrescriptionPillQuantity" class="form-control" />
+                <span asp-validation-for="PrescriptionPillQuantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrescriptionPillQuantityRemaining" class="control-label"></label>
+                <input asp-for="PrescriptionPillQuantityRemaining" class="form-control" />
+                <span asp-validation-for="PrescriptionPillQuantityRemaining" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrescriptionPillDose" class="control-label"></label>
+                <input asp-for="PrescriptionPillDose" class="form-control" />
+                <span asp-validation-for="PrescriptionPillDose" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrescriptionExpireDate" class="control-label"></label>
+                <input asp-for="PrescriptionExpireDate" class="form-control" />
+                <span asp-validation-for="PrescriptionExpireDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrescriptionEntryDate" class="control-label"></label>
+                <input asp-for="PrescriptionEntryDate" class="form-control" />
+                <span asp-validation-for="PrescriptionEntryDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrescriptionNextRefillEnableDate" class="control-label"></label>
+                <input asp-for="PrescriptionNextRefillEnableDate" class="form-control" />
+                <span asp-validation-for="PrescriptionNextRefillEnableDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="PrescriptionActive" /> @Html.DisplayNameFor(model => model.PrescriptionActive)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

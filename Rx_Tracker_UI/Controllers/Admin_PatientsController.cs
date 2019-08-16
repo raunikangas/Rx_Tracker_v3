@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,23 +11,22 @@ using Rx_Tracker_v3;
 namespace Rx_Tracker_UI.Controllers
 {
     [Authorize]
-    public class PatientsController : Controller
+    public class Admin_PatientsController : Controller
     {
         private readonly RxContext _context;
 
-        public PatientsController(RxContext context)
+        public Admin_PatientsController(RxContext context)
         {
             _context = context;
         }
 
-        // GET: Patients
-        public IActionResult Index()
+        // GET: Admin_Patients
+        public async Task<IActionResult> Index()
         {
-            return View(Processing.ListIndividualPatient(HttpContext.User.Identity.Name));
-            //return View(await _context.Patients.ToListAsync());
+            return View(await _context.Patients.ToListAsync());
         }
 
-        // GET: Patients/Details/5
+        // GET: Admin_Patients/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,13 +44,13 @@ namespace Rx_Tracker_UI.Controllers
             return View(patient);
         }
 
-        // GET: Patients/Create
+        // GET: Admin_Patients/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Patients/Create
+        // POST: Admin_Patients/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -68,7 +66,7 @@ namespace Rx_Tracker_UI.Controllers
             return View(patient);
         }
 
-        // GET: Patients/Edit/5
+        // GET: Admin_Patients/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -84,7 +82,7 @@ namespace Rx_Tracker_UI.Controllers
             return View(patient);
         }
 
-        // POST: Patients/Edit/5
+        // POST: Admin_Patients/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -100,7 +98,7 @@ namespace Rx_Tracker_UI.Controllers
             {
                 try
                 {
-                    Processing.db.Update(patient);
+                    _context.Update(patient);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -119,42 +117,39 @@ namespace Rx_Tracker_UI.Controllers
             return View(patient);
         }
 
-        // GET: Patients/Disable/5
-        //public async Task<IActionResult> Disable(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: Admin_Patients/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //    var patient = await _context.Patients
-        //        .FirstOrDefaultAsync(m => m.PatientID == id);
-        //    if (patient == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var patient = await _context.Patients
+                .FirstOrDefaultAsync(m => m.PatientID == id);
+            if (patient == null)
+            {
+                return NotFound();
+            }
 
-        //    return View(patient);
-        //}
+            return View(patient);
+        }
 
-        //// POST: Patients/Disable/5
-        //[HttpPost, ActionName("Disable")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DisableConfirmed(int id)
-        //{
-        //    //var patient = await _context.Patients.FindAsync(id);
-        //    //_context.Patients.Remove(patient);
-        //    var patient = Processing.ReturnIndividualPatient(id);
-        //    patient.PatientActive = false;
-        //    Processing.db.SaveChanges();
-        //    return RedirectToAction(nameof(Index));
-        //}
+        // POST: Admin_Patients/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var patient = await _context.Patients.FindAsync(id);
+            _context.Patients.Remove(patient);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
 
         private bool PatientExists(int id)
         {
-            return Processing.db.Patients.Any(e => e.PatientID == id);
+            return _context.Patients.Any(e => e.PatientID == id);
         }
-
 
         #region Controller Methods
         [HttpGet]
@@ -170,16 +165,8 @@ namespace Rx_Tracker_UI.Controllers
 
         }
 
-        //[HttpPost]
-        //public IActionResult PatientRx(IFormCollection data)
-        //{
-        //    var accountNumber = Convert.ToInt32(data["AccountNumber"]);
-        //    var amount = Convert.ToDecimal(data["Amount"]);
-
-        //    Bank.Withdraw(accountNumber, amount);
-        //    return RedirectToAction(nameof(Index));
-        //}
 
         #endregion
+
     }
 }

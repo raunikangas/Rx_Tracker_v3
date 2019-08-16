@@ -13,12 +13,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.PatientFirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PatientLastName)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.PatientFullName)
             </th>
             <th>
@@ -30,48 +24,34 @@
             <th>
                 @Html.DisplayNameFor(model => model.PatientEmail)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PatientPhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PatientActive)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientFirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientLastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientFullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientBirthDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientEnteredDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientPhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientActive)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.PatientID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PatientID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PatientID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.ToList())
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PatientFullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PatientBirthDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PatientEnteredDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PatientEmail)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.PatientID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.PatientID">Details</a> |
+                    <a asp-action="PatientRx" asp-route-id="@item.PatientID">RX List</a> |
+                    <a asp-action="Disable" asp-route-id="@item.PatientID">Disable</a> |
+                    <a asp-controller="Prescriptions" asp-action="Index" asp-route-id="@item.PatientID">RX List Test</a>
+
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

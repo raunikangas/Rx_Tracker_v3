@@ -1,0 +1,101 @@
+﻿@model IEnumerable<Rx_Tracker_v3.Prescription>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PrescriptionName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrescriptionPatientTrackingNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrescriptionRefillQuantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrescriptionRefillRemaining)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrescriptionPillQuantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrescriptionPillQuantityRemaining)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrescriptionPillDose)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrescriptionExpireDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrescriptionEntryDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrescriptionNextRefillEnableDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrescriptionActive)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Patient)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrescriptionName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrescriptionPatientTrackingNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrescriptionRefillQuantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrescriptionRefillRemaining)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrescriptionPillQuantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrescriptionPillQuantityRemaining)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrescriptionPillDose)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrescriptionExpireDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrescriptionEntryDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrescriptionNextRefillEnableDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrescriptionActive)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Patient.PatientEmail)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.PrescriptionID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.PrescriptionID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.PrescriptionID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

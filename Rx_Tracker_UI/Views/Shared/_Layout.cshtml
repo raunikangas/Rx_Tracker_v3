@@ -34,7 +34,14 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                     <li><a asp-area="" asp-controller="Patients" asp-action="Index">Patient Data</a></li>
-                    <li><a asp-area="" asp-controller="Transactions" asp-action="Index">All Transactions</a></li>
+                    @{
+                        if (User.Identity.IsAuthenticated)
+                        {
+                            <li><a asp-area="" asp-controller="Transactions" asp-action="Index">All Transactions</a></li>
+                            <li><a asp-area="" asp-controller="Admin_Patients" asp-action="Index">Admin Options</a></li>
+                        }
+                    }
+
                 </ul>
                 <partial name="_LoginPartial" />
             </div>

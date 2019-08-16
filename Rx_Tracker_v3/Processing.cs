@@ -15,6 +15,11 @@ namespace Rx_Tracker_v3
             return db.Patients.First(a => a.PatientID == patientID);
         }
 
+        public static Patient SelectPatientByEmail(string patientEmail)
+        {
+            return db.Patients.First(a => a.PatientEmail.ToLower() == patientEmail.ToLower());
+        }
+
         public static Prescription SelectPrescription(int rxID)
         {
             return db.Prescriptions.First(a => a.PrescriptionID == rxID);
@@ -71,10 +76,26 @@ namespace Rx_Tracker_v3
             return (db.Patients.Where(a => a.PatientActive == true));
         }
 
+        /// <summary>
+        /// Returns an enumerable list of patients by Patient ID
+        /// </summary>
+        /// <param name="patientID">Patient ID Number</param>
+        /// <returns></returns>
         public static IEnumerable<Patient> ListIndividualPatient(int patientID)
         {
             return (db.Patients.Where(a => a.PatientID == patientID));
         }
+
+        /// <summary>
+        /// Returns an Enumerable List of Patients by Patient Email Address
+        /// </summary>
+        /// <param name="patientEmail">Patient Email Address</param>
+        /// <returns></returns>
+        public static IEnumerable<Patient> ListIndividualPatient(string patientEmail)
+        {
+            return db.Patients.Where(a => a.PatientEmail == patientEmail);
+        }
+
 
         public static IEnumerable<Prescription> ListPrescriptions()
         {
@@ -229,6 +250,12 @@ namespace Rx_Tracker_v3
             return db.Patients.First(a => a.PatientID == patientID);
         }
 
+        public static int ReturnPatientIdFromEmail(string patientEmail)
+        {
+            var patientObject = db.Patients.First(a => a.PatientEmail == patientEmail);
+
+            return patientObject.PatientID;
+        }
 
         #endregion
 
