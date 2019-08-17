@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Rx_Tracker_v3.Refill>
+
+@{
+    ViewData["Title"] = "Refill";
+}
+
+<h2>Refill</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.RefillRxID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RefillEntryDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RefillFilled)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RefillFillDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Patient)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RefillRxID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RefillEntryDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RefillFilled)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RefillFillDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Patient.PatientEmail)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.RefillID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.RefillID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.RefillID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

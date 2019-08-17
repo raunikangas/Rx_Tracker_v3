@@ -23,36 +23,9 @@
                 <span asp-validation-for="PatientLastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PatientFullName" class="control-label"></label>
-                <input asp-for="PatientFullName" class="form-control" />
-                <span asp-validation-for="PatientFullName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="PatientBirthDate" class="control-label"></label>
                 <input asp-for="PatientBirthDate" class="form-control" />
                 <span asp-validation-for="PatientBirthDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PatientEnteredDate" class="control-label"></label>
-                <input asp-for="PatientEnteredDate" class="form-control" />
-                <span asp-validation-for="PatientEnteredDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PatientEmail" class="control-label"></label>
-                <input asp-for="PatientEmail" class="form-control" />
-                <span asp-validation-for="PatientEmail" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PatientPhoneNumber" class="control-label"></label>
-                <input asp-for="PatientPhoneNumber" class="form-control" />
-                <span asp-validation-for="PatientPhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <div class="checkbox">
-                    <label>
-                        <input asp-for="PatientActive" /> @Html.DisplayNameFor(model => model.PatientActive)
-                    </label>
-                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />

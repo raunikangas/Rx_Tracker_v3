@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -67,10 +68,12 @@ namespace Rx_Tracker_UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PrescriptionID,PrescriptionPatientID,PrescriptionName,PrescriptionPatientTrackingNumber,PrescriptionRefillQuantity,PrescriptionRefillRemaining,PrescriptionPillQuantity,PrescriptionPillQuantityRemaining,PrescriptionPillDose,PrescriptionExpireDate,PrescriptionEntryDate,PrescriptionNextRefillEnableDate,PrescriptionActive")] Prescription prescription)
         {
+            
             if (ModelState.IsValid)
             {
-                _context.Add(prescription);
-                await _context.SaveChangesAsync();
+                //_context.Add(prescription);
+                Processing.AddPrescription(Processing.ReturnPatientIdFromEmail(User.Identity.Name), prescription.PrescriptionName, prescription.PrescriptionRefillQuantity, prescription.PrescriptionPillQuantity, prescription.PrescriptionPillDose, prescription.PrescriptionExpireDate);
+                //await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["PrescriptionPatientID"] = new SelectList(_context.Patients, "PatientID", "PatientEmail", prescription.PrescriptionPatientID);
@@ -164,5 +167,33 @@ namespace Rx_Tracker_UI.Controllers
         {
             return _context.Prescriptions.Any(e => e.PrescriptionID == id);
         }
+
+
+        //Refill GET
+        [HttpGet]
+        public async Task<IActionResult> Refill(int? rxID)
+        {
+            if (rxID == null)
+            {
+                return NotFound();
+            }
+
+            IEnumerable<Prescription> rxObject = Processing.db.Prescriptions.Where(a => a.PrescriptionID == rxID.Value);
+
+            return View(rxObject);
+        }
+
+        //Refill POST
+        //[HttpPost]
+        //public IActionResult Refill(IFormCollection data)
+        //{
+        //    Processing.AddRefill(data["PrescriptionID"]);
+
+        //    var rxObject = Processing.db.Prescriptions.First(a => a.PrescriptionID == rxID);
+
+        //    Processing.AddRefill(rxID.Value, rxObject.PrescriptionPatientID);
+
+        //    return View()
+        //}
     }
 }

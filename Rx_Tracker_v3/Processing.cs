@@ -257,6 +257,20 @@ namespace Rx_Tracker_v3
             return patientObject.PatientID;
         }
 
+        public static bool ReturnPrescriptionRefillEnabledBool(int rxID)
+        {
+            var rxObject = db.Prescriptions.First(a => a.PrescriptionID == rxID);
+            if(rxObject.PrescriptionNextRefillEnableDate < DateTime.Now)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
         #endregion
 
     }

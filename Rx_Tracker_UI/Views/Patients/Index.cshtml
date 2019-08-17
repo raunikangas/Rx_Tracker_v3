@@ -28,30 +28,37 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.ToList())
+        @if (Model.ToList().Count > 0)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PatientFullName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PatientBirthDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PatientEnteredDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PatientEmail)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.PatientID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.PatientID">Details</a> |
-                    <a asp-action="PatientRx" asp-route-id="@item.PatientID">RX List</a> |
-                    <a asp-action="Disable" asp-route-id="@item.PatientID">Disable</a> |
-                    <a asp-controller="Prescriptions" asp-action="Index" asp-route-id="@item.PatientID">RX List Test</a>
-
-                </td>
-            </tr>
+            @foreach (var item in Model.ToList())
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PatientFullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PatientBirthDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PatientEnteredDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PatientEmail)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.PatientID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.PatientID">Details</a> |
+                        @*<a asp-action="PatientRx" asp-route-id="@item.PatientID">RX List</a> | *@
+                        @*@<a asp-action="Disable" asp-route-id="@item.PatientID">Disable</a> | *@
+                        <a asp-controller="Prescriptions" asp-action="Index" asp-route-id="@item.PatientID">RX List</a>
+                    </td>
+                </tr>
+            }
         }
+        else
+        {
+                <h1>You need to create a profile</h1>
+        }
+
     </tbody>
 </table>

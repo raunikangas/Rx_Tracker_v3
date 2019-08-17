@@ -35,7 +35,7 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                     <li><a asp-area="" asp-controller="Patients" asp-action="Index">Patient Data</a></li>
                     @{
-                        if (User.Identity.IsAuthenticated)
+                        if (User.Identity.IsAuthenticated && User.Identity.Name == "admin@test.com")
                         {
                             <li><a asp-area="" asp-controller="Transactions" asp-action="Index">All Transactions</a></li>
                             <li><a asp-area="" asp-controller="Admin_Patients" asp-action="Index">Admin Options</a></li>

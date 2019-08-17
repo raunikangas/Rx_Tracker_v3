@@ -57,12 +57,14 @@ namespace Rx_Tracker_UI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PatientID,PatientFirstName,PatientLastName,PatientFullName,PatientBirthDate,PatientEnteredDate,PatientEmail,PatientPhoneNumber,PatientActive")] Patient patient)
+        public async Task<IActionResult> Create([Bind("PatientFirstName,PatientLastName,PatientBirthDate")] Patient patient)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(patient);
-                await _context.SaveChangesAsync();
+                Processing.AddPatient(patient.PatientFirstName, patient.PatientLastName, HttpContext.User.Identity.Name, patient.PatientBirthDate);
+                patient.PatientEmail = HttpContext.User.Identity.Name;
+                //await _context.SaveChangesAsync();
+                //await Processing.db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(patient);
@@ -71,12 +73,15 @@ namespace Rx_Tracker_UI.Controllers
         // GET: Patients/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            var patientObject = Processing.db.Patients.First(a => a.PatientEmail == User.Identity.Name);
             if (id == null)
             {
-                return NotFound();
+                id = patientObject.PatientID;
+                //return NotFound();
             }
 
-            var patient = await _context.Patients.FindAsync(id);
+            var patient = Processing.ReturnIndividualPatient(patientObject.PatientID);
+            //var patient = await _context.Patients.FindAsync(id);
             if (patient == null)
             {
                 return NotFound();
@@ -89,7 +94,7 @@ namespace Rx_Tracker_UI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PatientID,PatientFirstName,PatientLastName,PatientFullName,PatientBirthDate,PatientEnteredDate,PatientEmail,PatientPhoneNumber,PatientActive")] Patient patient)
+        public async Task<IActionResult> Edit(int id, [Bind("PatientID,PatientFirstName,PatientLastName,PatientBirthDate,PatientEmail")] Patient patient)
         {
             if (id != patient.PatientID)
             {
@@ -100,8 +105,9 @@ namespace Rx_Tracker_UI.Controllers
             {
                 try
                 {
-                    Processing.db.Update(patient);
-                    await _context.SaveChangesAsync();
+                    patient.PatientFullName = $"{patient.PatientLastName}, {patient.PatientFirstName}";
+                    _context.Update(patient);
+                    //await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {

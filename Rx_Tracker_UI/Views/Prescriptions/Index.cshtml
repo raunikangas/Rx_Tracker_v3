@@ -7,46 +7,38 @@
 <h2>Index</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-controller="Prescriptions" asp-action="Create">Create New Prescription</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.PrescriptionName)
+               @* @Html.DisplayNameFor(model => model.PrescriptionName)*@
+                Rx Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PrescriptionPatientTrackingNumber)
+                @*@Html.DisplayNameFor(model => model.PrescriptionPatientTrackingNumber)*@
+                Indv ID
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PrescriptionRefillQuantity)
+               @* @Html.DisplayNameFor(model => model.PrescriptionRefillRemaining) *@
+                Rem Refill
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PrescriptionRefillRemaining)
+                @*@Html.DisplayNameFor(model => model.PrescriptionPillQuantityRemaining)*@
+                Rem Qty
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PrescriptionPillQuantity)
+                @*@Html.DisplayNameFor(model => model.PrescriptionPillDose)*@
+                Dose
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PrescriptionPillQuantityRemaining)
+                @*@Html.DisplayNameFor(model => model.PrescriptionExpireDate)*@
+                Expire Date
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PrescriptionPillDose)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PrescriptionExpireDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PrescriptionEntryDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PrescriptionNextRefillEnableDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PrescriptionActive)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Patient)
+                @*@Html.DisplayNameFor(model => model.PrescriptionNextRefillEnableDate)*@
+                Refill Enable Date
             </th>
             <th></th>
         </tr>
@@ -61,13 +53,7 @@
                 @Html.DisplayFor(modelItem => item.PrescriptionPatientTrackingNumber)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PrescriptionRefillQuantity)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.PrescriptionRefillRemaining)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PrescriptionPillQuantity)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PrescriptionPillQuantityRemaining)
@@ -79,21 +65,17 @@
                 @Html.DisplayFor(modelItem => item.PrescriptionExpireDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PrescriptionEntryDate)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.PrescriptionNextRefillEnableDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PrescriptionActive)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Patient.PatientEmail)
-            </td>
-            <td>
+                @if (item.PrescriptionNextRefillEnableDate < DateTime.Now)
+                {
+                    <a asp-action="Refill">Refill | </a>
+                }
+
                 <a asp-action="Edit" asp-route-id="@item.PrescriptionID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.PrescriptionID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PrescriptionID">Delete</a>
+                <a asp-action="Delete" asp-route-id="@item.PrescriptionID">Delete</a> |
             </td>
         </tr>
 }
