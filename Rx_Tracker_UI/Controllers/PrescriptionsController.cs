@@ -171,14 +171,14 @@ namespace Rx_Tracker_UI.Controllers
 
         //Refill GET
         [HttpGet]
-        public async Task<IActionResult> Refill(int? rxID)
+        public async Task<IActionResult> Refill(int? id)
         {
-            if (rxID == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            IEnumerable<Prescription> rxObject = Processing.db.Prescriptions.Where(a => a.PrescriptionID == rxID.Value);
+            IEnumerable<Prescription> rxObject = Processing.db.Prescriptions.Where(a => a.PrescriptionID == id.Value);
 
             return View(rxObject);
         }
@@ -195,5 +195,34 @@ namespace Rx_Tracker_UI.Controllers
 
         //    return View()
         //}
+
+        [HttpGet]
+        public async Task<IActionResult> Dose(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+            var prescription = await _context.Prescriptions
+                .Include(p => p.Patient)
+                .FirstOrDefaultAsync(m => m.PrescriptionID == id);
+            if (prescription == null)
+            {
+                return NotFound();
+            }
+
+            return View(prescription);
+        }
+
+        [HttpPost, ActionName ("Dose")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DoseConfirmed ()
+        {
+
+
+            //return View();
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

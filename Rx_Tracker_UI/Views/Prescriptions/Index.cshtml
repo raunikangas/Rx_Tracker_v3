@@ -68,14 +68,16 @@
                 @Html.DisplayFor(modelItem => item.PrescriptionNextRefillEnableDate)
             </td>
             <td>
+                <a asp-action="Dose" asp-route-id="@item.PrescriptionID">Take Dose</a> |
+
                 @if (item.PrescriptionNextRefillEnableDate < DateTime.Now)
                 {
-                    <a asp-action="Refill">Refill | </a>
+                    <a asp-action="Refill" asp-route-id="@item.PrescriptionID">Refill</a> @: |
                 }
 
                 <a asp-action="Edit" asp-route-id="@item.PrescriptionID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PrescriptionID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PrescriptionID">Delete</a> |
+                <a asp-action="Details" asp-route-id="@item.PrescriptionID">Details</a>@*|
+                <a asp-action="Delete" asp-route-id="@item.PrescriptionID">Delete</a> |*@
             </td>
         </tr>
 }

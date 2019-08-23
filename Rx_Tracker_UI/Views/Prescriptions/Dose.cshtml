@@ -1,0 +1,69 @@
+﻿@model Rx_Tracker_v3.Prescription
+
+@{
+    ViewData["Title"] = "Dose";
+}
+
+<h2>Dose</h2>
+
+<h3>Prescription Dose Verification:</h3>
+<div>
+    <h4>Prescription</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionPillQuantity)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionPillQuantity)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionPillQuantityRemaining)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionPillQuantityRemaining)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionPillDose)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionPillDose)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionRefillQuantity)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionRefillQuantity)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionRefillRemaining)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionRefillRemaining)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionExpireDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionExpireDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrescriptionNextRefillEnableDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrescriptionNextRefillEnableDate)
+        </dd>
+    </dl>
+    
+    <form asp-action="Dose">
+        <input type="hidden" asp-for="PrescriptionID" />
+        <input type="submit" value="Dose" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
